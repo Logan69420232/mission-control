@@ -128,6 +128,15 @@ export default function Dashboard() {
           >
             Refresh
           </button>
+          <button
+            onClick={async () => {
+              await fetch("/api/auth/logout", { method: "POST" });
+              window.location.href = "/login";
+            }}
+            className="px-3 py-1.5 text-xs font-medium bg-slate-800 hover:bg-red-900/50 text-slate-400 hover:text-red-400 rounded-md border border-slate-700 hover:border-red-800 transition-colors"
+          >
+            Logout
+          </button>
         </div>
       </div>
 
