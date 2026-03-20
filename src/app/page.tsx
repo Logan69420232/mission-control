@@ -62,7 +62,8 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
-function formatTokens(n: number): string {
+function formatTokens(n: number | null | undefined): string {
+  if (n == null) return "0";
   if (n >= 1000000) return (n / 1000000).toFixed(1) + "M";
   if (n >= 1000) return (n / 1000).toFixed(1) + "K";
   return n.toString();
@@ -145,8 +146,8 @@ export default function Dashboard() {
         <div className="mb-8 grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-4">
             <p className="text-xs text-slate-400 uppercase tracking-wider">Total Tokens (Week)</p>
-            <p className="text-2xl font-bold text-white mt-1">{formatTokens(usage.totals.total_tokens)}</p>
-            <p className="text-xs text-slate-500 mt-1">${(usage.totals.total_cost_cents / 100).toFixed(2)} estimated</p>
+            <p className="text-2xl font-bold text-white mt-1">{formatTokens(usage.totals?.total_tokens)}</p>
+            <p className="text-xs text-slate-500 mt-1">${((usage.totals?.total_cost_cents ?? 0) / 100).toFixed(2)} estimated</p>
           </div>
           {usage.perAgent.map((a) => (
             <div key={a.name} className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-4">
@@ -193,7 +194,7 @@ export default function Dashboard() {
                 {agent.current_task && (
                   <div className="mt-3 bg-slate-900/50 rounded-md p-2.5">
                     <p className="text-sm text-slate-300">{agent.current_task}</p>
-                    <p className="text-xs text-slate-500 mt-1">Assigned by {agent.current_task_assigned_by}</p>
+                    <p className="text-xs text-slate-500 mt-1">Assigned by {agent.current_task_assigned_by ?? "unknown"}</p>
                   </div>
                 )}
                 <div className="mt-3 flex gap-4 text-xs text-slate-400">
@@ -221,12 +222,12 @@ export default function Dashboard() {
                       <h3 className="text-sm text-white font-medium truncate">{task.name}</h3>
                       <StatusBadge status={task.status} />
                     </div>
-                    <p className="text-xs text-slate-400 mt-0.5 truncate">{task.description}</p>
+                    <p className="text-xs text-slate-400 mt-0.5 truncate">{task.description ?? ""}</p>
                   </div>
                 </div>
                 <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500">
-                  <span>{task.agent_emoji} {task.agent_name}</span>
-                  <span>by {task.assigned_by}</span>
+                  <span>{task.agent_emoji ?? ""} {task.agent_name ?? ""}</span>
+                  <span>by {task.assigned_by ?? "unknown"}</span>
                   <span>{formatTime(task.started_at)}</span>
                   <span>{formatDuration(task.started_at, task.completed_at)}</span>
                   <span>{formatTokens(task.token_cost)} tokens</span>
@@ -260,12 +261,12 @@ export default function Dashboard() {
                 </tr>
               ) : crons.map((cron) => (
                 <tr key={cron.id} className="border-b border-slate-700/30 last:border-0">
-                  <td className="p-3 text-white font-medium">{cron.name}</td>
-                  <td className="p-3 text-slate-300">{cron.schedule_human}</td>
-                  <td className="p-3 text-slate-300">{cron.agent_emoji} {cron.agent_name}</td>
+                  <td className="p-3 text-white font-medium">{cron.name ?? ""}</td>
+                  <td className="p-3 text-slate-300">{cron.schedule_human ?? ""}</td>
+                  <td className="p-3 text-slate-300">{cron.agent_emoji ?? ""} {cron.agent_name ?? ""}</td>
                   <td className="p-3 text-slate-400">{formatTime(cron.last_run)}</td>
                   <td className="p-3 text-slate-400">{formatTime(cron.next_run)}</td>
-                  <td className="p-3"><StatusBadge status={cron.last_run_status} /></td>
+                  <td className="p-3"><StatusBadge status={cron.last_run_status ?? "unknown"} /></td>
                   <td className="p-3 text-right text-slate-300">{formatTokens(cron.last_run_cost)}</td>
                 </tr>
               ))}
