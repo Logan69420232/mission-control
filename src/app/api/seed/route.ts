@@ -15,7 +15,7 @@ export async function POST() {
     await sql`DELETE FROM agents`;
 
     // John Snow
-    const john = await sql`
+    await sql`
       INSERT INTO agents (name, emoji, model, status, current_task, current_task_assigned_by, session_tokens_used, week_tokens_used)
       VALUES ('John Snow', '❄️', 'anthropic/claude-sonnet-4-6', 'active', 'Managing NF Supplements operations', 'Logan King', 0, 0)
       RETURNING id
