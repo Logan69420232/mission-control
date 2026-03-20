@@ -48,12 +48,12 @@ interface WeeklyUsage {
 
 function StatusBadge({ status }: { status: string }) {
   const colors: Record<string, string> = {
-    active: "bg-[#6aaa3a]/20 text-[#6aaa3a] border-[#6aaa3a]/30",
+    active: "bg-[#82aa4b]/20 text-[#82aa4b] border-[#82aa4b]/30",
     idle: "bg-slate-500/20 text-slate-400 border-slate-500/30",
     "running task": "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
     pending: "bg-slate-500/20 text-slate-400 border-slate-500/30",
     running: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-    done: "bg-[#6aaa3a]/20 text-[#6aaa3a] border-[#6aaa3a]/30",
+    done: "bg-[#82aa4b]/20 text-[#82aa4b] border-[#82aa4b]/30",
     failed: "bg-red-500/20 text-red-400 border-red-500/30",
   };
   return (

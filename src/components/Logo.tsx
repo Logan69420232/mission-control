@@ -7,7 +7,7 @@ export default function Logo({ size = 40 }: { size?: number }) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <circle cx="50" cy="50" r="50" fill="#6aaa3a" />
+      <circle cx="50" cy="50" r="50" fill="#82aa4b" />
       {/* Stem */}
       <path
         d="M50 75 C50 75 50 45 50 40"
