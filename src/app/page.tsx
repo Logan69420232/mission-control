@@ -48,16 +48,16 @@ interface WeeklyUsage {
 
 function StatusBadge({ status }: { status: string }) {
   const colors: Record<string, string> = {
-    active: "bg-[#82aa4b]/20 text-[#82aa4b] border-[#82aa4b]/30",
-    idle: "bg-slate-500/20 text-slate-400 border-slate-500/30",
-    "running task": "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-    pending: "bg-slate-500/20 text-slate-400 border-slate-500/30",
-    running: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-    done: "bg-[#82aa4b]/20 text-[#82aa4b] border-[#82aa4b]/30",
-    failed: "bg-red-500/20 text-red-400 border-red-500/30",
+    active: "bg-[#D9E4B8] text-[#3a5a1a] border-[#C0D0A0]",
+    idle: "bg-[#F3F4F6] text-[#6B7280] border-[#E5E7EB]",
+    "running task": "bg-[#FEF3C7] text-[#92400E] border-[#FDE68A]",
+    pending: "bg-[#F3F4F6] text-[#6B7280] border-[#E5E7EB]",
+    running: "bg-[#FEF3C7] text-[#92400E] border-[#FDE68A]",
+    done: "bg-[#D9E4B8] text-[#3a5a1a] border-[#C0D0A0]",
+    failed: "bg-[#FEE2E2] text-[#991B1B] border-[#FECACA]",
   };
   return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${colors[status] || colors.idle}`}>
+    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${colors[status] || colors.idle}`}>
       {status}
     </span>
   );
@@ -112,172 +112,194 @@ export default function Dashboard() {
     return () => clearInterval(interval);
   }, [fetchAll]);
 
+  const activeCount = agents.filter((a) => a.status === "active" || a.status === "running task").length;
+
   return (
-    <div className="min-h-screen bg-slate-900 p-6">
+    <div className="min-h-screen bg-[#F5F5F5]">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8 border-t-4 border-nfs-green pt-6">
-        <div className="flex items-center gap-3">
-          <Logo size={32} />
-          <div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">Mission Control</h1>
-            <p className="text-sm text-slate-400 mt-1">AI Agent Management Dashboard</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-4">
-          <span className="text-xs text-slate-500">
-            Last refresh: {lastRefresh.toLocaleTimeString()}
-          </span>
-          <button
-            onClick={fetchAll}
-            className="px-3 py-1.5 text-xs font-medium bg-slate-800 hover:bg-nfs-green hover:text-white text-slate-300 rounded-md border border-slate-700 hover:border-nfs-green transition-colors"
-          >
-            Refresh
-          </button>
-          <button
-            onClick={async () => {
-              await fetch("/api/auth/logout", { method: "POST" });
-              window.location.href = "/login";
-            }}
-            className="px-3 py-1.5 text-xs font-medium bg-slate-800 hover:bg-red-900/50 text-slate-400 hover:text-red-400 rounded-md border border-slate-700 hover:border-red-800 transition-colors"
-          >
-            Logout
-          </button>
-        </div>
-      </div>
-
-      {/* Weekly Cost Summary */}
-      {usage && (
-        <div className="mb-8 grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-4">
-            <p className="text-xs text-slate-400 uppercase tracking-wider">Total Tokens (Week)</p>
-            <p className="text-2xl font-bold text-white mt-1">{formatTokens(usage.totals?.total_tokens)}</p>
-            <p className="text-xs text-slate-500 mt-1">${((usage.totals?.total_cost_cents ?? 0) / 100).toFixed(2)} estimated</p>
-          </div>
-          {usage.perAgent.map((a) => (
-            <div key={a.name} className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-4">
-              <p className="text-xs text-slate-400 uppercase tracking-wider">{a.emoji} {a.name}</p>
-              <p className="text-2xl font-bold text-white mt-1">{formatTokens(a.total_tokens)}</p>
-              <p className="text-xs text-slate-500 mt-1">{a.model} &middot; ${(a.total_cost_cents / 100).toFixed(2)}</p>
+      <header className="bg-white border-b-2 border-[#82aa4b] px-6 py-4">
+        <div className="max-w-[1200px] mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Logo size={36} />
+            <div>
+              <h1 className="text-xl font-bold text-[#222222] tracking-tight">Mission Control</h1>
+              <p className="text-xs text-[#888888]">NF Supplements</p>
             </div>
-          ))}
-          {usage.perModel.length > 1 && (
-            <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-4">
-              <p className="text-xs text-slate-400 uppercase tracking-wider">Per Model</p>
-              {usage.perModel.map((m) => (
-                <div key={m.model} className="mt-1">
-                  <span className="text-sm text-white font-medium">{formatTokens(m.total_tokens)}</span>
-                  <span className="text-xs text-slate-400 ml-2">{m.model}</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-[#888888]">
+              Last refresh: {lastRefresh.toLocaleTimeString()}
+            </span>
+            <button
+              onClick={fetchAll}
+              className="px-4 py-1.5 text-xs font-medium bg-[#82aa4b] hover:bg-[#6a8f3a] text-white rounded-[10px] shadow-[0_2px_6px_rgba(130,170,75,0.3)] transition-colors"
+            >
+              Refresh
+            </button>
+            <button
+              onClick={async () => {
+                await fetch("/api/auth/logout", { method: "POST" });
+                window.location.href = "/login";
+              }}
+              className="px-4 py-1.5 text-xs font-medium text-[#666666] bg-white hover:bg-[#F5F5F5] rounded-full border border-[#D6E4C0] transition-colors"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-[1200px] mx-auto px-8 py-8">
+        {/* Stats Summary Row */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+          <div className="card-blob bg-white border border-[#D6E4C0] rounded-[14px] shadow-[0_1px_4px_rgba(0,0,0,0.05)] p-6">
+            <p className="text-xs text-[#888888] uppercase tracking-wider font-medium">Total Agents</p>
+            <p className="text-3xl font-bold text-[#222222] mt-2">{agents.length}</p>
+          </div>
+          <div className="card-blob bg-white border border-[#D6E4C0] rounded-[14px] shadow-[0_1px_4px_rgba(0,0,0,0.05)] p-6">
+            <p className="text-xs text-[#888888] uppercase tracking-wider font-medium">Active Now</p>
+            <p className="text-3xl font-bold text-[#82aa4b] mt-2">{activeCount}</p>
+          </div>
+          <div className="card-blob bg-white border border-[#D6E4C0] rounded-[14px] shadow-[0_1px_4px_rgba(0,0,0,0.05)] p-6">
+            <p className="text-xs text-[#888888] uppercase tracking-wider font-medium">Tokens This Week</p>
+            <p className="text-3xl font-bold text-[#222222] mt-2">{formatTokens(usage?.totals?.total_tokens)}</p>
+            <p className="text-xs text-[#888888] mt-1">${((usage?.totals?.total_cost_cents ?? 0) / 100).toFixed(2)} estimated</p>
+          </div>
+          <div className="card-blob bg-white border border-[#D6E4C0] rounded-[14px] shadow-[0_1px_4px_rgba(0,0,0,0.05)] p-6">
+            <p className="text-xs text-[#888888] uppercase tracking-wider font-medium">Cron Jobs</p>
+            <p className="text-3xl font-bold text-[#222222] mt-2">{crons.length}</p>
+          </div>
+        </div>
+
+        {/* Weekly Usage Breakdown */}
+        {usage && (usage.perAgent.length > 0 || usage.perModel.length > 1) && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+            {usage.perAgent.map((a) => (
+              <div key={a.name} className="card-blob bg-white border border-[#D6E4C0] rounded-[14px] shadow-[0_1px_4px_rgba(0,0,0,0.05)] p-6">
+                <p className="text-xs text-[#888888] uppercase tracking-wider font-medium">{a.emoji} {a.name}</p>
+                <p className="text-2xl font-bold text-[#222222] mt-2">{formatTokens(a.total_tokens)}</p>
+                <p className="text-xs text-[#888888] mt-1">{a.model} &middot; ${(a.total_cost_cents / 100).toFixed(2)}</p>
+              </div>
+            ))}
+            {usage.perModel.length > 1 && (
+              <div className="card-blob bg-white border border-[#D6E4C0] rounded-[14px] shadow-[0_1px_4px_rgba(0,0,0,0.05)] p-6">
+                <p className="text-xs text-[#888888] uppercase tracking-wider font-medium">Per Model</p>
+                {usage.perModel.map((m) => (
+                  <div key={m.model} className="mt-2">
+                    <span className="text-sm text-[#222222] font-semibold">{formatTokens(m.total_tokens)}</span>
+                    <span className="text-xs text-[#888888] ml-2">{m.model}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Agents Panel */}
+          <section>
+            <h2 className="text-lg font-bold text-[#222222] mb-4">Agents</h2>
+            <div className="space-y-4">
+              {agents.length === 0 ? (
+                <div className="bg-white border border-[#D6E4C0] rounded-[14px] shadow-[0_1px_4px_rgba(0,0,0,0.05)] p-8 text-center">
+                  <p className="text-[#888888]">No agents connected yet</p>
+                </div>
+              ) : agents.map((agent) => (
+                <div key={agent.id} className="card-blob bg-white border border-[#D6E4C0] rounded-[14px] shadow-[0_1px_4px_rgba(0,0,0,0.05)] p-6">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">{agent.emoji}</span>
+                      <div>
+                        <h3 className="text-[#222222] font-semibold">{agent.name}</h3>
+                        <p className="text-xs text-[#888888] font-mono">{agent.model}</p>
+                      </div>
+                    </div>
+                    <StatusBadge status={agent.status} />
+                  </div>
+                  {agent.current_task && (
+                    <div className="mt-3 bg-[#F5F5F5] rounded-xl p-3">
+                      <p className="text-sm text-[#555555]">{agent.current_task}</p>
+                      <p className="text-xs text-[#888888] mt-1">Assigned by {agent.current_task_assigned_by ?? "unknown"}</p>
+                    </div>
+                  )}
+                  <div className="mt-3 flex gap-4 text-xs text-[#888888]">
+                    <span>Session: <span className="text-[#222222] font-medium">{formatTokens(agent.session_tokens_used)}</span> tokens</span>
+                    <span>Week: <span className="text-[#222222] font-medium">{formatTokens(agent.week_tokens_used)}</span> tokens</span>
+                  </div>
                 </div>
               ))}
             </div>
-          )}
-        </div>
-      )}
+          </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Agents Panel */}
-        <section>
-          <h2 className="text-lg font-semibold text-white mb-4">Agents</h2>
-          <div className="space-y-3">
-            {agents.length === 0 ? (
-              <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-8 text-center">
-                <p className="text-slate-400">No agents connected yet</p>
-              </div>
-            ) : agents.map((agent) => (
-              <div key={agent.id} className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-4">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xl">{agent.emoji}</span>
-                    <div>
-                      <h3 className="text-white font-semibold">{agent.name}</h3>
-                      <p className="text-xs text-slate-400 font-mono">{agent.model}</p>
+          {/* Tasks Feed */}
+          <section>
+            <h2 className="text-lg font-bold text-[#222222] mb-4">Tasks Feed</h2>
+            <div className="space-y-3">
+              {tasks.length === 0 ? (
+                <div className="bg-white border border-[#D6E4C0] rounded-[14px] shadow-[0_1px_4px_rgba(0,0,0,0.05)] p-8 text-center">
+                  <p className="text-[#888888]">No tasks yet</p>
+                </div>
+              ) : tasks.map((task) => (
+                <div key={task.id} className="bg-white border border-[#D6E4C0] rounded-[14px] shadow-[0_1px_4px_rgba(0,0,0,0.05)] p-4">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-sm text-[#222222] font-semibold truncate">{task.name}</h3>
+                        <StatusBadge status={task.status} />
+                      </div>
+                      <p className="text-xs text-[#888888] mt-0.5 truncate">{task.description ?? ""}</p>
                     </div>
                   </div>
-                  <StatusBadge status={agent.status} />
-                </div>
-                {agent.current_task && (
-                  <div className="mt-3 bg-slate-900/50 rounded-md p-2.5">
-                    <p className="text-sm text-slate-300">{agent.current_task}</p>
-                    <p className="text-xs text-slate-500 mt-1">Assigned by {agent.current_task_assigned_by ?? "unknown"}</p>
-                  </div>
-                )}
-                <div className="mt-3 flex gap-4 text-xs text-slate-400">
-                  <span>Session: <span className="text-slate-300 font-medium">{formatTokens(agent.session_tokens_used)}</span> tokens</span>
-                  <span>Week: <span className="text-slate-300 font-medium">{formatTokens(agent.week_tokens_used)}</span> tokens</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Tasks Feed */}
-        <section>
-          <h2 className="text-lg font-semibold text-white mb-4">Tasks Feed</h2>
-          <div className="space-y-2">
-            {tasks.length === 0 ? (
-              <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-8 text-center">
-                <p className="text-slate-400">No tasks yet</p>
-              </div>
-            ) : tasks.map((task) => (
-              <div key={task.id} className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-3">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-sm text-white font-medium truncate">{task.name}</h3>
-                      <StatusBadge status={task.status} />
-                    </div>
-                    <p className="text-xs text-slate-400 mt-0.5 truncate">{task.description ?? ""}</p>
+                  <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-[#888888]">
+                    <span>{task.agent_emoji ?? ""} {task.agent_name ?? ""}</span>
+                    <span>by {task.assigned_by ?? "unknown"}</span>
+                    <span>{formatTime(task.started_at)}</span>
+                    <span>{formatDuration(task.started_at, task.completed_at)}</span>
+                    <span>{formatTokens(task.token_cost)} tokens</span>
                   </div>
                 </div>
-                <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500">
-                  <span>{task.agent_emoji ?? ""} {task.agent_name ?? ""}</span>
-                  <span>by {task.assigned_by ?? "unknown"}</span>
-                  <span>{formatTime(task.started_at)}</span>
-                  <span>{formatDuration(task.started_at, task.completed_at)}</span>
-                  <span>{formatTokens(task.token_cost)} tokens</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      </div>
-
-      {/* Cron Jobs */}
-      <section className="mt-6">
-        <h2 className="text-lg font-semibold text-white mb-4">Recurring Tasks</h2>
-        <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg overflow-hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-slate-700/50">
-                <th className="text-left p-3 text-xs text-slate-400 font-medium uppercase tracking-wider">Job</th>
-                <th className="text-left p-3 text-xs text-slate-400 font-medium uppercase tracking-wider">Schedule</th>
-                <th className="text-left p-3 text-xs text-slate-400 font-medium uppercase tracking-wider">Agent</th>
-                <th className="text-left p-3 text-xs text-slate-400 font-medium uppercase tracking-wider">Last Run</th>
-                <th className="text-left p-3 text-xs text-slate-400 font-medium uppercase tracking-wider">Next Run</th>
-                <th className="text-left p-3 text-xs text-slate-400 font-medium uppercase tracking-wider">Status</th>
-                <th className="text-right p-3 text-xs text-slate-400 font-medium uppercase tracking-wider">Cost</th>
-              </tr>
-            </thead>
-            <tbody>
-              {crons.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="p-8 text-center text-slate-400">No cron jobs</td>
-                </tr>
-              ) : crons.map((cron) => (
-                <tr key={cron.id} className="border-b border-slate-700/30 last:border-0">
-                  <td className="p-3 text-white font-medium">{cron.name ?? ""}</td>
-                  <td className="p-3 text-slate-300">{cron.schedule_human ?? ""}</td>
-                  <td className="p-3 text-slate-300">{cron.agent_emoji ?? ""} {cron.agent_name ?? ""}</td>
-                  <td className="p-3 text-slate-400">{formatTime(cron.last_run)}</td>
-                  <td className="p-3 text-slate-400">{formatTime(cron.next_run)}</td>
-                  <td className="p-3"><StatusBadge status={cron.last_run_status ?? "unknown"} /></td>
-                  <td className="p-3 text-right text-slate-300">{formatTokens(cron.last_run_cost)}</td>
-                </tr>
               ))}
-            </tbody>
-          </table>
+            </div>
+          </section>
         </div>
-      </section>
+
+        {/* Cron Jobs */}
+        <section className="mt-8">
+          <h2 className="text-lg font-bold text-[#222222] mb-4">Recurring Tasks</h2>
+          <div className="bg-white border border-[#D6E4C0] rounded-[14px] shadow-[0_1px_4px_rgba(0,0,0,0.05)] overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-[#D6E4C0]">
+                  <th className="text-left p-4 text-xs text-[#888888] font-medium uppercase tracking-wider">Job</th>
+                  <th className="text-left p-4 text-xs text-[#888888] font-medium uppercase tracking-wider">Schedule</th>
+                  <th className="text-left p-4 text-xs text-[#888888] font-medium uppercase tracking-wider">Agent</th>
+                  <th className="text-left p-4 text-xs text-[#888888] font-medium uppercase tracking-wider">Last Run</th>
+                  <th className="text-left p-4 text-xs text-[#888888] font-medium uppercase tracking-wider">Next Run</th>
+                  <th className="text-left p-4 text-xs text-[#888888] font-medium uppercase tracking-wider">Status</th>
+                  <th className="text-right p-4 text-xs text-[#888888] font-medium uppercase tracking-wider">Cost</th>
+                </tr>
+              </thead>
+              <tbody>
+                {crons.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="p-8 text-center text-[#888888]">No cron jobs</td>
+                  </tr>
+                ) : crons.map((cron) => (
+                  <tr key={cron.id} className="border-b border-[#F0F0F0] last:border-0 hover:bg-[#FAFAFA] transition-colors">
+                    <td className="p-4 text-[#222222] font-medium">{cron.name ?? ""}</td>
+                    <td className="p-4 text-[#555555]">{cron.schedule_human ?? ""}</td>
+                    <td className="p-4 text-[#555555]">{cron.agent_emoji ?? ""} {cron.agent_name ?? ""}</td>
+                    <td className="p-4 text-[#888888]">{formatTime(cron.last_run)}</td>
+                    <td className="p-4 text-[#888888]">{formatTime(cron.next_run)}</td>
+                    <td className="p-4"><StatusBadge status={cron.last_run_status ?? "unknown"} /></td>
+                    <td className="p-4 text-right text-[#555555]">{formatTokens(cron.last_run_cost)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
     </div>
   );
 }
