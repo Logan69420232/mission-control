@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import Logo from "@/components/Logo";
 
 interface Agent {
   id: number;
@@ -47,12 +48,12 @@ interface WeeklyUsage {
 
 function StatusBadge({ status }: { status: string }) {
   const colors: Record<string, string> = {
-    active: "bg-green-500/20 text-green-400 border-green-500/30",
+    active: "bg-[#6aaa3a]/20 text-[#6aaa3a] border-[#6aaa3a]/30",
     idle: "bg-slate-500/20 text-slate-400 border-slate-500/30",
     "running task": "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
     pending: "bg-slate-500/20 text-slate-400 border-slate-500/30",
     running: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-    done: "bg-green-500/20 text-green-400 border-green-500/30",
+    done: "bg-[#6aaa3a]/20 text-[#6aaa3a] border-[#6aaa3a]/30",
     failed: "bg-red-500/20 text-red-400 border-red-500/30",
   };
   return (
@@ -114,10 +115,13 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-slate-900 p-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Mission Control</h1>
-          <p className="text-sm text-slate-400 mt-1">AI Agent Management Dashboard</p>
+      <div className="flex items-center justify-between mb-8 border-t-4 border-nfs-green pt-6">
+        <div className="flex items-center gap-3">
+          <Logo size={32} />
+          <div>
+            <h1 className="text-2xl font-bold text-white tracking-tight">Mission Control</h1>
+            <p className="text-sm text-slate-400 mt-1">AI Agent Management Dashboard</p>
+          </div>
         </div>
         <div className="flex items-center gap-4">
           <span className="text-xs text-slate-500">
@@ -125,7 +129,7 @@ export default function Dashboard() {
           </span>
           <button
             onClick={fetchAll}
-            className="px-3 py-1.5 text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-md border border-slate-700 transition-colors"
+            className="px-3 py-1.5 text-xs font-medium bg-slate-800 hover:bg-nfs-green hover:text-white text-slate-300 rounded-md border border-slate-700 hover:border-nfs-green transition-colors"
           >
             Refresh
           </button>

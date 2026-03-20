@@ -11,6 +11,10 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        "nfs-green": {
+          DEFAULT: "#6aaa3a",
+          dark: "#578a2e",
+        },
       },
     },
   },

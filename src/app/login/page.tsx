@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Logo from "@/components/Logo";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -33,8 +34,9 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-slate-900 flex items-center justify-center p-6">
       <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-white tracking-tight">Mission Control</h1>
+        <div className="text-center mb-8 flex flex-col items-center">
+          <Logo size={64} />
+          <h1 className="text-2xl font-bold text-white tracking-tight mt-4">Mission Control</h1>
           <p className="text-sm text-slate-400 mt-1">Sign in to continue</p>
         </div>
 
@@ -78,7 +80,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full px-3 py-2 text-sm font-medium bg-slate-700 hover:bg-slate-600 text-white rounded-md border border-slate-600 transition-colors disabled:opacity-50"
+            className="w-full px-3 py-2 text-sm font-medium bg-nfs-green hover:bg-nfs-green-dark text-white rounded-md border border-nfs-green-dark transition-colors disabled:opacity-50"
           >
             {loading ? "Signing in..." : "Sign in"}
           </button>
