@@ -5,7 +5,12 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  await initDb();
-  const { rows } = await sql`SELECT * FROM agents ORDER BY id`;
-  return NextResponse.json(rows);
+  try {
+    await initDb();
+    const { rows } = await sql`SELECT * FROM agents ORDER BY id`;
+    return NextResponse.json(rows);
+  } catch (e) {
+    console.error("Failed to fetch agents:", e);
+    return NextResponse.json([]);
+  }
 }

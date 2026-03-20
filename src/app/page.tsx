@@ -92,15 +92,15 @@ export default function Dashboard() {
 
   const fetchAll = useCallback(async () => {
     const [a, t, c, u] = await Promise.all([
-      fetch("/api/agents").then((r) => r.json()),
-      fetch("/api/tasks").then((r) => r.json()),
-      fetch("/api/cron").then((r) => r.json()),
-      fetch("/api/usage/weekly").then((r) => r.json()),
+      fetch("/api/agents").then((r) => r.json()).catch(() => []),
+      fetch("/api/tasks").then((r) => r.json()).catch(() => []),
+      fetch("/api/cron").then((r) => r.json()).catch(() => []),
+      fetch("/api/usage/weekly").then((r) => r.json()).catch(() => ({})),
     ]);
-    setAgents(a);
-    setTasks(t);
-    setCrons(c);
-    setUsage(u);
+    setAgents(Array.isArray(a) ? a : []);
+    setTasks(Array.isArray(t) ? t : []);
+    setCrons(Array.isArray(c) ? c : []);
+    setUsage(u && u.perAgent ? u : null);
     setLastRefresh(new Date());
   }, []);
 
